@@ -1,99 +1,96 @@
-Overview
-NeuroScan AI is a deep learning-based medical imaging analysis system designed for automated classification of brain tumors from MRI scans. The system implements state-of-the-art computer vision techniques to assist in the detection and classification of neurological abnormalities.
+# NeuroScan AI - Sistem Analisis Pencitraan Medis Berbasis Deep Learning
 
-Features
-Multi-Class Classification: Supports four diagnostic categories:
+## Gambaran Umum
 
-Glioma tumors
+NeuroScan AI adalah sistem analisis pencitraan medis berbasis deep learning yang dirancang untuk klasifikasi otomatis tumor otak dari hasil pemindaian MRI. Sistem ini mengimplementasikan teknik computer vision mutakhir untuk membantu deteksi dan klasifikasi abnormalitas neurologis.
 
-Meningioma tumors
+## Fitur Utama
 
-Pituitary tumors
+### Klasifikasi Multi-Kelas
+Mendukung empat kategori diagnostik:
+- Tumor Glioma
+- Tumor Meningioma
+- Tumor Pituitary
+- Tidak ada tumor (pemindaian sehat)
 
-No tumor (healthy scans)
+### Arsitektur Model Canggih
+- Jaringan Saraf Tiruan Konvolusional kustom dengan batch normalization
+- Transfer learning dengan varian EfficientNet
+- Pipeline augmentasi data komprehensif
 
-Advanced Model Architectures:
+### Pemrosesan Tingkat Medis
+- Preprocessing khusus untuk data pencitraan MRI
+- Protokol validasi dan pengujian yang robust
+- Metrik kinerja komprehensif
 
-Custom Convolutional Neural Networks with batch normalization
+## Spesifikasi Teknis
 
-Transfer learning with EfficientNet variants
+### Dataset
+Sistem menggunakan Brain Tumor Classification MRI Dataset yang berisi gambar T1-weighted contrast-enhanced dengan distribusi berikut:
+- Sampel training: Sekitar 2.800 gambar
+- Sampel testing: Sekitar 700 gambar
+- Representasi seimbang di semua empat kelas
 
-Comprehensive data augmentation pipelines
+### Arsitektur Model
 
-Medical-Grade Processing:
-
-Specialized preprocessing for MRI imaging data
-
-Robust validation and testing protocols
-
-Comprehensive performance metrics
-
-Technical Specifications
-Dataset
-The system utilizes the Brain Tumor Classification MRI Dataset containing T1-weighted contrast-enhanced images with the following distribution:
-
-Training samples: Approximately 2,800 images
-
-Testing samples: Approximately 700 images
-
-Balanced representation across all four classes
-
-Model Architectures
-Custom CNN Architecture
-python
+#### Arsitektur CNN Kustom
+```
 Input Layer (224×224×3)
-    ↓
+↓
 Conv2D (32 filters) → Batch Normalization → ReLU Activation → MaxPooling
-    ↓
+↓
 Conv2D (64 filters) → Batch Normalization → ReLU Activation → MaxPooling
-    ↓  
+↓
 Conv2D (128 filters) → Batch Normalization → ReLU Activation → MaxPooling
-    ↓
+↓
 Flatten → Dense (224 units) → Dropout (0.5)
-    ↓
+↓
 Dense (128 units) → Dropout (0.5) → Output (4 units, softmax)
-Transfer Learning Implementation
-Base model: EfficientNetB0 with ImageNet pretrained weights
+```
 
-Custom classification head with global average pooling
+#### Implementasi Transfer Learning
+- Base model: EfficientNetB0 dengan bobot pra-latihan ImageNet
+- Klasifikasi kustom dengan global average pooling
+- Strategi fine-tuning untuk adaptasi pencitraan medis
 
-Fine-tuning strategies for medical imaging adaptation
+## Persyaratan Instalasi
 
-Installation
-Requirements
-Python 3.8+
+- Python 3.8+
+- TensorFlow 2.8.0+
+- OpenCV 4.5.0+
+- NumPy 1.19.0+
+- Matplotlib 3.3.0+
+- Scikit-learn 1.0.0+
 
-TensorFlow 2.8.0+
+## Langkah Instalasi
 
-OpenCV 4.5.0+
-
-NumPy 1.19.0+
-
-Matplotlib 3.3.0+
-
-Scikit-learn 1.0.0+
-
-Installation Steps
-bash
+```bash
 git clone https://github.com/yourusername/neuroscan-ai.git
 cd neuroscan-ai
 pip install -r requirements.txt
-Usage
-Data Preparation
-python
+```
+
+## Penggunaan
+
+### Persiapan Data
+
+```python
 from src.data_loader import MRIDataLoader
 
 data_loader = MRIDataLoader(
     train_dir='path/to/training',
-    test_dir='path/to/testing', 
+    test_dir='path/to/testing',
     image_size=(224, 224),
     batch_size=32,
     validation_split=0.15
 )
 
 train_dataset, validation_dataset, test_dataset = data_loader.load_datasets()
-Model Training
-python
+```
+
+### Training Model
+
+```python
 from src.trainer import ModelTrainer
 
 trainer = ModelTrainer()
@@ -104,110 +101,148 @@ training_history = trainer.train_model(
     epochs=30,
     callbacks=['early_stopping', 'reduce_lr']
 )
-Model Evaluation
-python
+```
+
+### Evaluasi Model
+
+```python
 from src.evaluator import ModelEvaluator
 
 evaluator = ModelEvaluator()
 performance_metrics = evaluator.comprehensive_evaluation(
-    model= trained_model,
+    model=trained_model,
     test_dataset=test_dataset,
     class_names=['glioma', 'meningioma', 'pituitary', 'notumor']
 )
-Performance Metrics
-Model Performance Comparison
-Model Architecture	Accuracy	Precision	Recall	F1-Score
-Custom CNN	92.5%	91.8%	92.1%	91.9%
-EfficientNetB0	94.2%	93.7%	93.9%	93.8%
-Detailed Classification Report
-text
-              Precision    Recall    F1-Score    Support
+```
 
-Glioma         0.93        0.92      0.92        300
-Meningioma     0.91        0.93      0.92        306  
-Pituitary      0.95        0.94      0.94        285
-No Tumor       0.96        0.95      0.95        294
+## Metrik Kinerja
 
-Accuracy                           0.94        1185
-Macro Avg       0.94        0.94      0.94        1185
-Weighted Avg    0.94        0.94      0.94        1185
-Project Structure
-text
+### Perbandingan Kinerja Model
+
+| Arsitektur Model | Akurasi | Presisi | Recall | F1-Score |
+|------------------|---------|---------|--------|----------|
+| Custom CNN       | 92.5%   | 91.8%   | 92.1%  | 91.9%    |
+| EfficientNetB0   | 94.2%   | 93.7%   | 93.9%  | 93.8%    |
+
+### Laporan Klasifikasi Detail
+
+```
+              Precision  Recall  F1-Score  Support
+
+     Glioma       0.93     0.92      0.92      300
+  Meningioma      0.91     0.93      0.92      306
+   Pituitary      0.95     0.94      0.94      285
+   No Tumor       0.96     0.95      0.95      294
+
+    Accuracy                           0.94     1185
+   Macro Avg      0.94     0.94      0.94     1185
+Weighted Avg      0.94     0.94      0.94     1185
+```
+
+## Struktur Proyek
+
+```
 neuroscan-ai/
 ├── src/
-│   ├── data_loader.py          # Data loading and preprocessing
-│   ├── model_builder.py        # Model architecture definitions
-│   ├── trainer.py              # Training procedures and configurations
-│   ├── evaluator.py            # Model evaluation and metrics
+│   ├── data_loader.py      # Loading data dan preprocessing
+│   ├── model_builder.py    # Definisi arsitektur model
+│   ├── trainer.py          # Prosedur training dan konfigurasi
+│   ├── evaluator.py        # Evaluasi model dan metrik
 │   └── utils/
-│       ├── visualization.py    # Result visualization tools
-│       └── metrics.py          # Custom metric implementations
-├── models/                     # Trained model files
-├── notebooks/                  # Experimental Jupyter notebooks
-├── tests/                      # Unit and integration tests
-├── docs/                       # Documentation
-├── requirements.txt            # Python dependencies
-├── setup.py                    # Package installation configuration
-└── config.yaml                 # System configuration parameters
-Medical Applications
-Diagnostic Assistance: Support tool for radiologists in tumor detection
+│       ├── visualization.py # Tools visualisasi hasil
+│       └── metrics.py      # Implementasi metrik kustom
+├── models/                 # File model terlatih
+├── notebooks/              # Notebook Jupyter eksperimental
+├── tests/                  # Unit test dan integration test
+├── docs/                   # Dokumentasi
+├── requirements.txt        # Dependencies Python
+├── setup.py               # Konfigurasi instalasi package
+└── config.yaml            # Parameter konfigurasi sistem
+```
 
-Research Enablement: Large-scale analysis of brain tumor patterns
+## Aplikasi Medis
 
-Educational Tool: Training resource for medical students
+- **Bantuan Diagnostik**: Alat pendukung untuk radiolog dalam deteksi tumor
+- **Penelitian**: Analisis skala besar pola tumor otak
+- **Alat Edukasi**: Sumber pembelajaran untuk mahasiswa kedokteran
+- **Telemedisin**: Kemampuan diagnostik jarak jauh
 
-Telemedicine: Remote diagnostic capabilities
+## Detail Implementasi Teknis
 
-Technical Implementation Details
-Data Augmentation Strategy
-python
+### Strategi Augmentasi Data
+
+```python
 data_augmentation = tf.keras.Sequential([
     layers.RandomFlip("horizontal_and_vertical"),
     layers.RandomRotation(0.1),
     layers.RandomZoom(0.1),
     layers.RandomContrast(0.2),
 ])
-Training Configuration
-Optimizer: Adam with weight decay (AdamW)
+```
 
-Learning Rate: 0.0005 with ReduceLROnPlateau scheduling
+### Konfigurasi Training
 
-Early Stopping: Patience of 7 epochs monitoring validation loss
+- **Optimizer**: Adam dengan weight decay (AdamW)
+- **Learning Rate**: 0.0005 dengan scheduling ReduceLROnPlateau
+- **Early Stopping**: Patience 7 epoch dengan monitoring validation loss
+- **Regularisasi**: L2 weight regularization dan dropout layers
 
-Regularization: L2 weight regularization and dropout layers
+## Berkontribusi
 
-Contributing
-Contributions are welcome. Please review our contribution guidelines before submitting pull requests.
+Kontribusi diterima. Silakan tinjau panduan kontribusi kami sebelum mengirimkan pull request.
 
-Fork the repository
+1. Fork repository
+2. Buat feature branch
+3. Implementasikan perubahan dengan test yang sesuai
+4. Pastikan kode memenuhi standar kualitas
+5. Submit pull request dengan deskripsi detail
 
-Create a feature branch
+## Lisensi
 
-Implement your changes with appropriate tests
+Proyek ini dilisensikan di bawah Lisensi MIT. Lihat file LICENSE untuk detail.
 
-Ensure code meets quality standards
+## Kutipan
 
-Submit a pull request with detailed description
+Jika Anda menggunakan software ini dalam penelitian Anda, silakan kutip:
 
-License
-This project is licensed under the MIT License. See LICENSE file for details.
-
-Citation
-If you use this software in your research, please cite:
-
-bibtex
+```bibtex
 @software{neuroscan_ai_2024,
-  title = {NeuroScan AI: Brain Tumor Classification System},
-  author = {Your Name},
-  year = {2024},
-  publisher = {GitHub},
-  url = {https://github.com/yourusername/neuroscan-ai}
+    title = {NeuroScan AI: Brain Tumor Classification System},
+    author = {Nama Anda},
+    year = {2024},
+    publisher = {GitHub},
+    url = {https://github.com/yourusername/neuroscan-ai}
 }
-Contact
-For technical inquiries or collaboration opportunities:
+```
 
-Email: your.email@institution.com
+## Kontak
 
-Project Repository: https://github.com/yourusername/neuroscan-ai
-Disclaimer
-This software is intended for research purposes only. It is not certified for clinical use. Always rely on qualified healthcare professionals for medical diagnoses and treatment decisions.
+Untuk pertanyaan teknis atau peluang kolaborasi:
+- Repository Proyek: https://github.com/yourusername/neuroscan-ai
+
+## Penafian
+
+Software ini ditujukan untuk tujuan penelitian saja. Tidak disertifikasi untuk penggunaan klinis. Selalu andalkan tenaga profesional kesehatan yang berkualifikasi untuk diagnosis dan keputusan perawatan medis.
+
+## Troubleshooting
+
+### Masalah Umum
+
+1. **Kekurangan Memori saat Training**
+   - Kurangi ukuran batch
+   - Gunakan data generator
+
+2. **Akurasi Training Tidak Meningkat**
+   - Periksa kualitas dan kuantitas data
+   - Adjust learning rate
+   - Coba arsitektur model yang berbeda
+
+3. **Overfitting**
+   - Tingkatkan regulasi
+   - Tambah augmentasi data
+   - Gunakan early stopping
+
+## Pembaruan Terakhir
+
+Terakhir diperbarui: November 2025
